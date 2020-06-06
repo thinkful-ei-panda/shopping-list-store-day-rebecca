@@ -2,7 +2,7 @@
 
 const store = {
   items: [
-    { id: cuid(), name: 'apples', checked: false },
+    { id: cuid(), name: 'apples' , checked: false },
     { id: cuid(), name: 'oranges', checked: false },
     { id: cuid(), name: 'milk', checked: true },
     { id: cuid(), name: 'bread', checked: false }
@@ -14,7 +14,9 @@ const generateItemElement = function (item) {
   let itemTitle = `<span class='shopping-item shopping-item__checked'>${item.name}</span>`;
   if (!item.checked) {
     itemTitle = `
-     <span class='shopping-item'>${item.name}</span>
+     <form class='js-item-rename'>
+      <input class='shopping-item' type='text' value='${item.name}'
+     </form>
     `;
   }
 
@@ -51,6 +53,9 @@ const render = function () {
   // property of false are included.
   if (store.hideCheckedItems) {
     items = items.filter(item => !item.checked);
+  if (store.writable) {
+
+  }
   }
 
   /**
@@ -63,6 +68,7 @@ const render = function () {
   // insert that HTML into the DOM
   $('.js-shopping-list').html(shoppingListItemsString);
 };
+
 
 const addItemToShoppingList = function (itemName) {
   store.items.push({ id: cuid(), name: itemName, checked: false });
@@ -147,6 +153,29 @@ const handleToggleFilterClick = function () {
   });
 };
 
+/*
+* User can edit the title of an item.
+*/
+const renameListItemName = function (id, itemName) {
+  const item = store.items.find(item => item.id === id);
+  item.name = itemName; // the value of the text input 
+};
+
+const handleRenameItemSubmit = function () {
+// Like in `handleItemCheckClicked`, 
+  // we use event delegation.
+  $('.js-shopping-list').on('submit', '.js-item-rename', event => {
+    event.preventDefault();    
+    const id = getItemIdFromElement(event.currentTarget);
+    const itemName = $(event.currentTarget).find('.shopping-item').val();
+    
+    // Rename the item.
+    renameListItemName(id, itemName);
+    // Render the updated shopping list.
+    render();
+  });
+};
+
 /**
  * This function will be our callback when the
  * page loads. It is responsible for initially 
@@ -160,9 +189,12 @@ const handleShoppingList = function () {
   render();
   handleNewItemSubmit();
   handleItemCheckClicked();
+  handleRenameItemSubmit();
   handleDeleteItemClicked();
   handleToggleFilterClick();
 };
 
 // when the page loads, call `handleShoppingList`
 $(handleShoppingList);
+
+

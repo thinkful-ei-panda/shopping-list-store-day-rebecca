@@ -35,7 +35,7 @@ button:hover {
 }
 
 .shopping-list > li {
-  margin-bottom: 20px;
+  margin: 20px;
   border: 1px solid grey;
   padding: 20px;
 }
@@ -50,4 +50,12 @@ button:hover {
 
 .shopping-item__checked {
   text-decoration: line-through;
+}
+
+.js-item-element {
+  margin: 1em auto;
+}
+
+#js-shopping-list-form {
+  margin: 1em auto;
 }
